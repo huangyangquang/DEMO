@@ -208,3 +208,20 @@ function _new(constructor, ...arg) {
 
 	return obj
 }
+
+
+function _new(constructor, ...arg) {
+	if(!constructor) return
+
+	var obj = Object.create(constructor.prototype)
+
+	var res = fn.call(obj, ...arg)
+
+	if(typeof res === 'object' || typeof res === 'function') {
+		return res
+	}
+
+	return obj
+}
+
+
