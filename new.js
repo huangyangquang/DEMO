@@ -210,7 +210,7 @@ function _new(constructor, ...arg) {
 }
 
 
-function _new(constructor, ...arg) {
+function _newtest(constructor, ...arg) {
 	if(!constructor) return
 
 	var obj = Object.create(constructor.prototype)
