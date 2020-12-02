@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏布局</title>
+	<style>
+		.wrapper {
+		     text-align: center;
+		     color: #fff;
+		     overflow: hidden;/* 这里清除浮动，因为触发了BFC */
+		     line-height: 200px;
+		}
+
+		.left {
+		     float: left;
+		     width: 200px;
+		     height: 200px;
+		     background-color: red;
+		}
+
+		.right {
+		     float: right;
+		     width: 200px;
+		     height: 200px;
+		     background-color: blue;
+		}
+
+		.content {
+		     height: 200px;
+		     margin: 0 200px;
+		     background-color: lime;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+	  <div class="left">left</div>
+	  <div class="right">right</div>
+	  <div class="content">content</div>
+	</div>
+	<p>
+		浮动元素没有覆盖在content上
+	</p>
+</body>
+</html>

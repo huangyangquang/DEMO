@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏布局</title>
+    <style type="text/css">
+        .layout {
+            display: flex;
+        }
+
+        .layout .left {
+            width: 300px;
+            background-color: red;
+        }
+
+        .layout .center {
+            /*flex 属性用于指定弹性子元素如何分配空间*/
+            flex: 1;
+            background-color: orange;
+        }
+
+        .layout .right{
+            width: 300px;
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+	<div class="layout">
+	    <div class="left"></div>
+        <div class="center">
+            <h1>flexbox</h1>
+            1.这是flexbox布局解决方案
+            2.这是flexbox布局解决方案
+        </div>
+        <div class="right"></div>
+	</div>
+	<p>
+		flexbox是一个相对来说完美的解决方法，但是兼容性不是太强，毕竟是是css3的新型布局模式，但是flexbox灵活多变可以使用不同尺寸的屏幕布局要求
+	</p>
+	
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<head>
+  <title>myVue</title>
+</head>
+<style>
+  #app {
+    text-align: center;
+  }
+</style>
+<body>
+  <div id="app">
+
+    <form>
+      <input type="text"  v-model="number">
+      <button type="button" v-click="increment">增加</button>
+    </form>
+    <h3 v-bind="number"></h3>
+
+    <form>
+      <input type="text"  v-model="count">
+      <button type="button" v-click="incre">增加</button>
+    </form>
+    <h3 v-bind="count"></h3>
+
+  </div>
+</body>
+
+<script>
+	// 数据劫持 + 发布订阅模式 + 指令解析
+  // 发布订阅模式怎么实现的？  哪一个是发布者，哪一个是订阅者，哪一个是调度中心？
+
+  function myVue(options) {
+    this._init(options);
+  }
+
+  myVue.prototype._init = function (options) {
+    this.$options = options; // 将数据挂在对象上
+    this.$el = document.querySelector(options.el); // dom元素
+    this.$data = options.data; // data数据
+    this.$methods = options.methods; // 方法函数
+
+    //_binding保存着model与view的映射关系，也就是我们前面定义的Watcher的实例。
+    // 当model改变时，我们会触发其中的指令类更新，保证view也能实时更新
+    // 调度中心 订阅器 
+    this._binding = {};
+    // 数据劫持
+    this._obverse(this.$data);
+    // 指令解析
+    this._complie(this.$el);
+  }
+ 
+  // 对data进行数据劫持
+  myVue.prototype._obverse = function (obj) {
+     var _this = this;
+     Object.keys(obj).forEach(function (key) { // 遍历每一个数据
+        if (obj.hasOwnProperty(key)) { // 判断这个属性key是不是在对象本身上的
+           _this._binding[key] = {                                 
+              _directives: []
+           };
+           // console.log('key:', _this._binding[key], obj[key], key)
+           var value = obj[key]; // 获取属性值obj[key]
+           var binding = _this._binding[key]; // 获取属性对应的_binding
+           if (typeof value === 'object') { 
+              _this._obverse(value); // 递归(如果属性的值是一个对象，就得对其里面得数据进行劫持)
+           }
+           // 数据劫持操作（最核心）
+           Object.defineProperty(_this.$data, key, {
+              enumerable: true,
+              configurable: true,
+              // 数据获取
+              get: function () {
+                 // console.log(`${key}获取${value}`);
+                 return value;
+              },
+              // 数据修改
+              set: function (newVal) {
+                 // console.log(`${key}更新${newVal}`);
+                 if (value !== newVal) {
+                    value = newVal;
+                    // 调度中心通知变化  修改视图  
+                    binding._directives.forEach(function (watch) {
+                       watch.update();
+                    })
+                 }
+              }
+           })
+        }
+     })
+  }
+
+  // _compile函数，用来解析我们的指令（v-bind,v-model,v-click）等，
+  // 并在这个过程中对view与model进行绑定
+  myVue.prototype._complie = function (root) {
+     var _this = this;
+     var nodes = root.children;
+
+     // 递归解析每一个子节点上的指令
+     for (var i = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+        if (node.children.length) {
+        this._complie(node);
+     }
+     // v-clikck  视图和vue的函数的绑定， 函数修改我们的数据，触发set函数， 通知其他watch更新
+     if (node.hasAttribute('v-click')) {
+        node.onclick = (function () { 
+          // 获取v-click上的属性值 （即某一个函数引用）
+           var attrVal = nodes[i].getAttribute('v-click');
+           // console.log(attrVal, nodes[i])
+           // 调用vue实例上的方法
+           // bind 方法返回一个新的改变好this指向的函数
+           return _this.$methods[attrVal].bind(_this.$data);
+        })(); // 立即执行函数，返回值是一个改变this指向的函数
+     }
+
+     // v-model
+     if (node.hasAttribute('v-model') && (node.tagName = 'INPUT' || node.tagName == 'TEXTAREA')) {
+        node.addEventListener('input', (function(key) {//立即执行函数
+           var attrVal = node.getAttribute('v-model');
+           // console.log('谁啊呢？', attrVal);// count number
+
+           // 添加订阅者
+           _this._binding[attrVal]._directives.push(new Watcher( // 订阅数据变化 绑定更新函数
+              'input',
+              node,
+              _this,
+              attrVal,
+              'value'
+           ))
+
+           return function() {
+              _this.$data[attrVal] =  nodes[key].value;
+           }
+
+        })(i));
+     } 
+
+     if (node.hasAttribute('v-bind')) {
+        var attrVal = node.getAttribute('v-bind');
+           console.log('enne', attrVal, node)
+
+          // 添加订阅者
+           _this._binding[attrVal]._directives.push(new Watcher( // 订阅数据变化 绑定更新函数
+              'text',
+              node,
+              _this,
+              attrVal,
+              'innerHTML'
+           ))
+        }
+     }
+  }
+
+  // 订阅者Watcher，用来绑定更新函数，实现对DOM元素的更新
+  function Watcher(name, el, vm, exp, attr) {
+    this.name = name;         //指令名称，例如文本节点，该值设为"text"
+    this.el = el;             //指令对应的DOM元素
+    this.vm = vm;             //指令所属myVue实例
+    this.exp = exp;           //指令对应的值，本例如"number"
+    this.attr = attr;         //绑定的属性值，本例为"innerHTML"
+
+    this.update(); // 绑定更新函数
+  }
+
+  Watcher.prototype.update = function () {
+    this.el[this.attr] = this.vm.$data[this.exp];
+  }
+
+  window.onload = function() {
+    var app = new myVue({
+      el:'#app',
+      data: {
+        number: 0,
+        count: 0,
+      },
+      methods: {
+        increment: function() {
+          this.number ++;
+        },
+        incre: function() {
+          this.count ++;
+        }
+      }
+    })
+  }
+</script>

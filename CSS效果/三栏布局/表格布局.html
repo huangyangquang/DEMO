@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏布局</title>
+    <style type="text/css">
+        .layout {
+            width: 100%;
+            display: table;
+        }
+
+        .layout div {
+            display: table-cell;
+        }
+
+        .layout .left{
+            width: 300px;
+            background-color: red;
+        }
+
+        .layout .center {
+            background-color: orange;
+        }
+
+        .layout .right {
+            width: 300px;
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+	<div class="layout">
+		<div class="left"></div>
+        <div class="center">
+            <h1>表格布局</h1>
+            1.这是表格布局解决方案
+            2.这是表格布局解决方案
+        </div>
+        <div class="right"></div>
+	</div>
+	<p>
+		利用表格布局，它的兼容性可以说是非常好，老版本的浏览器也能支持。但是表格在有某一块超出设定宽的时候，其他的两块都会随着变化，一直保持着等高的状态，除非设定高度，但是有些情况下我们是不需要等高的。
+	</p>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>不定宽溢出文本适配滚动</title>
+	<style>
+		.demo1 {
+			width: 100px;
+			word-break: keep-all;
+			border: 1px solid #000;
+			overflow: hidden;
+			cursor: pointer;
+			text-overflow: ellipsis;
+		}
+
+		.wrap {
+			width: 200px;
+			overflow: hidden;
+			border: 1px solid #000;
+		}
+
+		.scroll {
+			/*p 标签默认直接继承父级的宽度100%，使用inline-block可以直接获取到文本的宽度，而不使用inline的原因时，transform无法作用在内联元素上*/
+			display: inline-block;
+			white-space: nowrap;
+			cursor: pointer;
+			background-color: pink;
+		}
+
+		.scroll:hover {
+			animation: move 5s infinite alternate linear;
+		}
+
+		@keyframes move {
+			0% {
+				transform: translate(0, 0);
+			}
+			100% {
+				/*滚动的距离 S = 溢出的文本元素的宽度 - 父元素的宽度*/
+				transform: translate(calc(-100% + 200px), 0);
+			}
+		}
+
+		.wrap-2 {
+			width: 300px;
+			overflow: hidden;
+			border: 1px solid #000;
+		}
+
+		.scroll-2 {
+			display: inline-block;
+			position: relative;
+			white-space: nowrap;
+			cursor: pointer;
+			background-color: pink;
+		}
+
+		.scroll-2:hover {
+			animation: move1 5s infinite alternate linear;
+		}
+
+		@keyframes move1 {
+			0% {
+				left: 0; 
+				transform: translate(0, 0);
+			}
+			100% {
+				/*  left：       ----> */
+				left: 100%;
+				/*  translateX:  <---- */
+				transform: translate(-100%, 0);
+			}
+		}
+
+	</style>
+</head>
+<body>
+	
+	<p class="demo1" title="溢出文本1 溢出文本2 溢出文本3 溢出文本4">
+		溢出文本1溢出文本2溢出文本3溢出文本4
+	</p>
+	
+	<div class="wrap">
+		<strong>容器定宽，文本不定宽:</strong>
+		<p class="scroll">
+			多看看六年看了你的回家看了开始分解开来看到马卡龙马卡龙打开链接看杜拉拉昆明快来看看
+		</p>
+	</div>
+
+	<div class="wrap">
+		<strong>容器定宽，文本不定宽:</strong>
+		<p class="scroll">
+			多看看六年看了你
+		</p>
+	</div>
+
+	<div class="wrap-2">
+		<strong>容器不定宽，文本不定宽:</strong>
+		<p class="scroll-2">
+			多看看六年看了你的回家看了开始分解开来看到马卡龙马卡龙打开链接看杜拉拉昆明快来看看
+		</p>
+	</div>
+
+	<div class="wrap-2">
+		<strong>容器不定宽，文本不定宽:</strong>
+		<p class="scroll-2">
+			多看看六年看了你的回家看
+		</p>
+	</div>
+
+</body>
+<script>
+	// 不定宽溢出文本展示效果处理：
+	// 1. 溢出部分打点展示
+	// 2. 添加title属性 (hover 时弹出框提示)
+	// 3. 容器定宽，文本不定宽:
+	// 4. 容器不定宽（或者calc有兼容性问题），文本不定宽:
+
+	// 方案3 和 方案4的缺点就是：
+	// 无法通过 CSS 去判断当前元素长度是否大于父元素长度再选择性的进行动画。毕竟 CSS 只是负责样式，不控制行为。所以实际使用中，可能还是需要借助 JavaScript 简单判断，然后通过一个 class 进行控制。
+
+
+</script>
+</html>

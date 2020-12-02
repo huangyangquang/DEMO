@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏布局</title>
+	<style>
+		body {
+		  min-width: 500px; /*200 + 150 + 150 center的最小width默认150px*/
+		}
+
+		#container {
+		  width: 100%;
+		}
+
+		.column {
+		  float: left;
+		}
+		        
+		#center {
+		  margin-left: 200px;
+		  margin-right: 150px;
+		  height: 200px;
+		  background-color: red;
+		}
+		        
+		#left {
+		  width: 200px; 
+		  margin-left: -100%;
+		  height: 200px;
+		  background-color: green;
+		}
+		        
+		#right {
+		  width: 150px; 
+		  margin-left: -150px; /*往左边移动，当值大于width时从右边出来展示*/
+		  height: 200px;
+		  background-color: blue;
+		}
+		        
+		#footer {
+		  clear: both;
+		}
+	</style>
+</head>
+<body>
+	<div id="header"></div>
+	<div id="container" class="column">
+		<div id="center"></div>
+	</div>
+	<div id="left" class="column"></div>
+	<div id="right" class="column"></div>
+	<div id="footer"></div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>iframe - index</title>
+</head>
+<body>
+	<!-- src异步加载资源 -->
+	<iframe src="./demo.html" 
+		frameborder="1" 
+		class="demoFrame"
+		name='guan'></iframe>
+
+
+	<!-- 在同源下进行通信 -->
+	<script>
+		// var 全局生命默认挂载到window
+		var index = 'index_window';
+		
+		// 获取iframe元素
+		var demoFrame = document.getElementsByClassName('demoFrame')[0];
+
+		// 判断iframe里资源加载完成
+		demoFrame.onload = function() {
+			// 获取iframe元素的窗口
+			var demoW = demoFrame.contentWindow;
+			
+			console.log(demoW);
+			console.log(demoW.a);
+
+			console.log(window.frames['guan'] == demoW);
+			console.log(window.frames['guan'].a);
+		}
+		
+	</script>
+</body>
+</html>

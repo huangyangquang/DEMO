@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏布局</title>
+	<style type="text/css">
+			.layout {
+				position: relative;
+			}
+
+            .layout div{
+                position: absolute;
+            }
+
+            .layout .left{
+                left: 0;
+                width: 300px;
+                background-color: red;
+                height: 200px;
+            }
+
+            .layout .center {
+                left: 300px;
+                right: 300px;
+                background-color: orange;
+                height: 200px;
+            }
+
+            .layout .right{
+                right: 0;
+                width: 300px;
+                background-color: blue;
+                height: 200px;
+            }
+        </style>
+</head>
+<body>
+	<div class="layout">
+		<div class="center">
+            <h1>绝对定位</h1>
+            1.这是绝对定位布局解决方案
+            2.这是绝对定位布局解决方案
+        </div>
+		<div class="left"></div>
+        <div class="right"></div>
+	</div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<p>
+		绝对定位呢我们都知道，同浮动一样也是会脱离文档流，而且，绝对定位最致命的就是以后的元素也必须脱离，在不是整个页面都用定位的情况下还是不建议使用这个方案。
+	</p>
+	<p>
+		优点就是content这次可以被优先渲染出来了，因为它被排在了第一位
+	</p>
+	
+</body>
+</html>

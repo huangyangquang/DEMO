@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>虚拟dom</title>
+</head>
+<body>
+	
+	<script>
+		function Element(tagName, props, children) { // 虚拟节点构造函数
+		    this.tagName = tagName
+		    this.props = props
+		    this.children = children
+		    // dom 元素的 key 值，用作唯一标识符
+		    if(props.key){
+		       this.key = props.key
+		    }
+		    var count = 0
+		    children.forEach(function (child, i) {
+		        if (child instanceof Element) { // 判断每一个子节点是不是一个虚拟节点
+		            count += child.count
+		        } else { 
+		            children[i] = '' + child // 把子节点变成一个文本节点（数字 ==> 字符串）
+		        }
+		        count++
+		    })
+		    // 子元素个数(直接元素及子孙元素)
+		    this.count = count
+		}
+
+		function createElement(tagName, props, children){
+		 return new Element(tagName, props, children);
+		}
+
+		Element.prototype.render = function () { // 构造函数Element原型上的方法
+		    var el = document.createElement(this.tagName)
+		    var props = this.props
+		    // 设置节点的DOM属性
+		    for (var propName in props) {
+		        var propValue = props[propName]
+		        el.setAttribute(propName, propValue) // 设置真实dom元素上的属性
+		    }
+
+		    var children = this.children || []
+		    children.forEach(function (child) {
+		        var childEl = (child instanceof Element)
+		            ? child.render() // 如果子节点也是虚拟DOM，递归构建DOM节点
+		            : document.createTextNode(child) // 如果字符串，只构建文本节点
+		        el.appendChild(childEl)
+		    })
+		    return el // 返回真实的dom节点
+		} 
+
+		// 但是，在vue中是先通过遍历我们的dom节点，生成虚拟dom，在经过处理操作，将虚拟dom查询渲染到页面
+		var rootVNode = createElement('div',{id:'virtual-dom'},[
+		  createElement('p',{},['Virtual DOM']),
+		  createElement('ul', { id: 'list' }, [
+		    createElement('li', { class: 'item' }, ['Item 1']),
+		    createElement('li', { class: 'item' }, ['Item 2']),
+		    createElement('li', { class: 'item' }, ['Item 3'])
+		  ]),
+		  createElement('div',{},['Hello World'])
+		]) 
+
+		rootReal = rootVNode.render();
+		document.body.appendChild(rootReal); 
+
+
+	</script>
+</body>
+</html>

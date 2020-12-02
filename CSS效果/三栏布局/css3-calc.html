@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏布局</title>
+	<style>
+        .layout {
+        	width: 100%;
+        }
+
+        .layout>div {
+        	float: left;
+        }
+		
+		.layout .left {
+			background-color: red;
+        }
+
+        .layout .center {
+        	background-color: yellow;
+        	width: calc(60%);
+        }
+
+        .layout .right {
+        	background-color: blue;
+        }
+    </style>
+</head>
+<body>
+	<div class="layout">
+		<div class="left">左边部分</div>
+        <div class="center">中间部分</div>
+        <div class="right">右边部分</div>
+	</div>
+	<!-- <section class="layout calc">
+        <article class="left-center-right">
+            <div class="left">左边部分</div>
+            <div class="center">中间部分</div>
+            <div class="right">右边部分</div>
+        </article>
+    </section> -->
+</body>
+</html>

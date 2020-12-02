@@ -1,0 +1,65 @@
+
+
+
+
+
+
+61.style 标签写在 body 后与 body 前有什么区别？
+答：
+页面加载自上而下 当然是先加载样式。 写在body标签后由于浏览器以逐行方式对HTML文档进行解析，当解析到写在尾部的样式
+表（外联或写在style标签）会导致浏览器停止之前的渲染（css不会阻塞html的解析，但是会阻塞渲染），等待加载且解析样式表完成之后重新渲染（触发重排重绘），在windows的IE下可能会出现样式失效导致的页面闪烁问题。
+
+
+
+98.常见的元素隐藏方式？
+(参考：
+https://juejin.im/post/6844903456545701901#heading-2
+https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip-path
+https://developer.mozilla.org/zh-CN/docs/Web/CSS/clip)
+答：
+-（1）使用 display:none; 隐藏元素，使用这种方式，渲染树不会包含该元素，因此该元素不会在页面中占据位置，也不会响应绑定的监听事件。
+
+-（2）使用 visibility:hidden; 隐藏元素。元素在页面中仍占据空间，但是不会响应绑定的监听事件。
+
+-（3）使用 opacity:0; 将元素的透明度设置为 0，以此来实现元素的隐藏。元素在页面中仍然占据空间，并且能够响应元素绑定的监听事件。
+
+-（4）通过使用绝对定位将元素移动到可视区域外，以此来实现元素的隐藏。
+
+-（5）通过 z-index, 设置为负值，来使其他元素遮盖住该元素，以此来实现隐藏。
+
+-（6）通过 clip/clip-path 裁剪元素的方法来实现元素的隐藏，这种方法下，元素仍在页面中占据位置，但是不会响应绑定的监听事件。
+在以前，这可以通过 clip 属性（rect(top, right, bottom, left)）来实现，但是这个属性被废弃了(现在浏览器依然支持)，换成一个更好的属性叫做 clip-path(circle(0%))。
+
+-（7）通过 transform: scale(0,0)来将元素缩放为 0，以此来实现元素的隐藏。这种方法下，元素仍在页面中占据位置，但是不会响应绑定的监听事件。
+
+-（8）使用overflow:hidden，设置超出区域部分隐藏，该方式占据空间，无法响应点击事件
+
+
+
+说一下CSS隐藏元素 display、visibility、opacity的区别？
+答：
+display: none
+	元素彻底消失，也就是在renderTree上没有该元素的存在，子元素跟随父元素被隐藏，并且无法单独显示，绑定的事件也无法触发
+visibility: hidden
+	使元素不可见,子元素设置 visibility:visible; 后，子元素会显示，但是父元素不会显示,绑定的事件不能触发
+opacity: 0
+	实际上是元素的透明度为0, 子元素 opacity:1 是无效的，元素仍旧无法显示,绑定的事件仍旧可以触发。
+
+
+使用 base64 编码的优缺点？ （https://segmentfault.com/a/1190000012654771）
+答：
+base64编码是一种图片处理格式，通过特定的算法将图片编码成一长串字符串，在页面上显示时可
+用该字符串来代替图片的url属性。
+使用base64的优点： 减少一个图片的 HTTP 请求
+使用base64的缺点：
+1.根据base64的编码原理，编码后的大小会比源文件大小 大 1/3，如果把大图片编码到html/css中，不仅会造成文件体积增加，影响文件的加载速度，还会增加浏览器对html或css文件解析渲染的时间。
+2.使用base64无法直接缓存，要缓存只能缓存包含base64的文件，比如HTML或CSS，这相比于直接缓存图片的效果要差很多。
+3. ie8以前的浏览器不支持
+一般一些网站的小图标可以使用base64图片引入
+
+
+
+参考：
+https://mp.weixin.qq.com/s?__biz=MzAxODE2MjM1MA==&mid=2651563359&idx=1&sn=98f48adcb829cc16d8ec1dc5774874a4&chksm=8025729eb752fb88ef1d254b91da6560f3c28de87eff3605adcddbfc592cb928bd5711fb7f41&mpshare=1&scene=24&srcid=1104aG3Vu0SUAO9JjHPxL1JC&sharer_sharetime=1604457154969&sharer_shareid=721761037445a13e56841ac1264553ba&key=7cef430a7b17c87eebf9327d02f374ee43e27f3abfc61c394c01914636088bde623dba66a3bfbe9b153f25336e8b5d94d53060296501d52714f3e75f5f052beb47c6c311910a8a1467dd60d31d5979767e82182d6bcae732f3ee7f5f89f03d0f1c885acf49d82ac4404e94b7d257f4a286e1e25a9d69e1cf92fa2f2b8b38ceb9&ascene=14&uin=MjM4OTI2NzYyNA%3D%3D&devicetype=Windows+10+x64&version=6300002f&lang=zh_CN&exportkey=AR52ZLYOV1tp5lPiuPi7yXk%3D&pass_ticket=X5GI%2F04AMCIT5Z3tWxIx3NP0FSdGnjuIQBiTVSRA%2B%2BBcK1EKkK6qEoek3FCLvwZL&wx_header=0
+
+https://juejin.im/post/6844903810125529101

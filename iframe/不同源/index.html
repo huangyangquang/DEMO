@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>iframe - index</title>
+</head>
+<body>
+	<!-- src异步加载资源 -->
+	<!-- 这里假设地址不同源 -->
+	<iframe src="./demo.html" 
+		frameborder="1" 
+		class="demoFrame"
+		name='guan'></iframe>
+	
+	<script>
+		
+		var demoFrame = document.getElementsByClassName('demoFrame')[0];
+		var src = demoFrame.src;
+		var a = 45;
+		var flag = false;
+
+		document.onclick = function() {
+			var srcTemp = src + "#" + a;
+			demoFrame.src = srcTemp;
+			a ++;
+		}
+		
+
+		demoFrame.onload = function() {
+			if(!flag) {
+				demoFrame.src = './xl.html';
+				flag = true;
+			} else {
+				console.log( demoFrame.contentWindow.name );
+			}
+		}
+		
+	</script>
+</body>
+</html>

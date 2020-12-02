@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>iframe - demo</title>
+</head>
+<body>
+	<div>
+		我是div
+	</div>
+	<iframe src="./kid.html" frameborder="2"></iframe>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 在同源下进行通信 -->
+	<script>
+		var a = 'demoWindow';
+
+		// 获取主窗口
+		var parentW = window.parent;
+
+		console.log(parentW);
+		console.log(parentW.index);
+
+
+	</script>
+</body>
+</html>

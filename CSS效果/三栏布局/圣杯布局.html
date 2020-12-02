@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏布局</title>
+	<style>
+		body {
+		  min-width: 550px; /*200 + 200 + 150*/
+		}
+
+		#container {
+		  padding-left: 200px; 
+		  padding-right: 150px;
+		}
+
+		#container .column {
+		  float: left;
+		}
+
+		#center {
+		  width: 100%;
+		  background-color: red;
+		  height: 200px;
+		}
+
+		#left {
+		  width: 200px; 
+		  margin-left: -100%;
+		  position: relative;
+		  right: 200px;
+		  background-color: blue;
+		  height: 200px;
+
+		}
+
+		#right {
+		  width: 150px; 
+		  margin-right: -150px; 
+		  background-color: green;
+		  height: 200px;
+		}
+		
+		#header {
+			height: 20px;
+			background-color: #ddd;
+		}
+
+		#footer {
+		  height: 20px;
+		  background-color: #ddd;	
+		  clear: both;
+		}
+	</style>
+</head>
+<body>
+	<div id="header"></div>
+	<div id="container">
+	  <div id="center" class="column"></div>
+	  <div id="left" class="column"></div>
+	  <div id="right" class="column"></div>
+	</div>
+	<div id="footer"></div>
+</body>
+</html>

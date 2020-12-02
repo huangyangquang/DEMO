@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>隐藏元素</title>
+	<style>
+		.test {
+			width: 100px;
+			height: 100px;
+			border: 1px solid #000;
+			background-color: #f40;
+		}
+
+		.demo1 {
+			display: none;
+		}
+
+		.demo2 {
+			visibility: hidden;
+		}
+
+		.demo3 {
+			opacity: 0;
+		}
+
+		.demo4 {
+			position: absolute;
+			left: -999999px;
+			top: -999999px;
+		}
+
+		.demo5 {
+			position: relative;
+			left: -999999px;
+			top: -999999px;
+		}
+
+		.demo6 {
+			transform: scale(0, 0)
+		}
+
+		.demo7 {
+			white-space:nowrap;
+			overflow: hidden;
+		}
+
+		.demo7 #inner {
+			display: inline-block;
+			width: 50px;
+			height: 50px;
+			border: 1px solid #000;
+		}
+		
+		.demo8 {
+			position: absolute;
+			/*top, right, bottom, left: 表示从某个方向上接切掉多少像素*/
+			/*比如：从top这个方向接切掉100px*/
+			clip: rect(100px 50px 200px 0px); 
+		}
+
+		.demo9 {
+			clip-path: circle(0);
+		}
+		
+		.demo {
+			width: 50px;
+			height: 100px;
+			background-color: #bdf;
+		}
+		.demo11 {
+			display: none;
+		}
+		.demo12 {
+			visibility: hidden;
+		}
+		.demo12 .demo {
+			visibility: visible;
+		}
+		.demo13 {
+			opacity: 0;
+		}
+		.demo13 .demo {
+			opacity: 1;
+		}
+	</style>
+</head>
+<body>
+	1.
+	<div class="test demo1">1</div>
+	2.
+	<div class="test demo2"></div>
+	3.
+	<div class="test demo3">3</div>
+	4.
+	<div class="test demo4">4</div>
+	5.
+	<div class="test demo5">5</div>
+	6.
+	<div class="test demo6">6</div>
+	7.
+	<div class="test demo7">
+		7777777777777777777
+		<div id="inner">点击</div>
+	</div>
+	8.
+	<div class="test demo8">8</div>
+	9.
+	<div class="test demo9">9</div>
+	10.
+	<div class="test demo10">10</div>
+
+	<ins>display、visibility、opacity的区别？</ins>
+	<p>display:</p>
+	<div class="test demo11">
+		<div class="demo"></div>
+	</div>
+	<p>visibility:</p>
+	<div class="test demo12">
+		<div class="demo"></div>
+	</div>
+	<p>opacity:</p>
+	<div class="test demo13">
+		<div class="demo"></div>
+	</div>
+</body>
+<script>
+
+	var test = document.getElementsByClassName('test');
+
+	[...test].forEach(ele => {
+		ele.onclick = function() {
+			console.log(this.innerHTML);
+		}
+	})
+
+	inner.onclick = function() {
+		console.log(this.innerHTML);
+	}
+
+</script>
+</html>

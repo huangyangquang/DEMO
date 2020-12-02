@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏布局</title>
+	<style>
+		.wrapper {
+		  text-align: center;
+		  color: #fffdef;
+		  width: 100%;
+		  line-height: 200px;
+		  font-size: 40px;
+		}
+
+		.left {
+		  float: left;
+		  width: 200px;
+		  height: 200px;
+		  background-color: red;
+		}
+
+		.right {
+		  float: right;
+		  width: 200px;
+		  height: 200px;
+		  background-color: blue;
+		}
+
+		.content {
+		  height: 200px;
+		  background-color: lime;
+		  /* 这会形成BFC区域，不会与浮动的元素重叠 */
+		  overflow: hidden;
+		}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="left">left</div>
+		<div class="right">right</div>
+		<div class="content">content</div>
+	</div>
+	<p>
+		overflow: hidden 是会触发BFC的，那么此时content区域就是一个BFC区域了，那么他不会被浮动的元素盖住，所以，它的content的宽度就是从不被left盖住的位置开始到被right盖住的区域之前这段宽度
+	</p>
+	<p>
+		不能优先渲染content区域
+	</p>
+</body>
+</html>

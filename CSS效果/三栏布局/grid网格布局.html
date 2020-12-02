@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏布局</title>
+  <style type="text/css">
+        .layout{
+            display: grid;
+            width: 100%;
+            grid-template-rows: 100px; /*每一行的行高*/
+            grid-template-columns: 300px auto 300px; /*定义每一列的列宽*/
+        }
+
+        .layout .left {
+            background-color: red;
+        }
+
+        .layout .center {
+            background-color: orange;
+        }
+
+        .layout .right {
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+	<div class="layout">
+		<div class="left"></div>
+        <div class="center">
+            <h1>网格布局</h1>
+            1.这是网格布局解决方案
+            2.这是网格布局解决方案
+        </div>
+        <div class="right"></div>
+	</div>
+	<p>
+		简单，两行代码可完成
+	</p>
+</body>
+</html>

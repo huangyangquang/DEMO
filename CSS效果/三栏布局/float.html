@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏布局</title>
+	<style>
+        .layout .left{
+            float:left;
+            width:300px;
+            background-color:red;
+            height: 200px;
+        }
+        .layout .right{
+            float:right;
+            width:300px;
+            background-color:blue;
+            height: 200px;
+        }
+
+        .layout .center {
+            background-color:orange;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+	<div class="layout">
+		<div class="left"></div>
+        <div class="right"></div>
+        <div class="center">
+            <h1>浮动布局</h1>
+            1.这是浮动布局解决方案
+            2.这是浮动布局解决方案
+        </div>
+	</div>
+	<p>注意：利用浮动解决布局时，center必须在最后</p>
+    <p>
+    	浮动的缺点是造成元素脱离文档流，如果处理不好，后边的元素会塌陷，但是浮动的兼容性比较好，并且容易实现，在处理好与周边元素的关系的情况下，浮动还是很好的选择
+    </p>
+    <p>
+    	缺点就是主要内容无法最先加载，当页面内容较多时会影响用户体验。
+    </p>
+    <p>
+    	浮动元素覆盖在center上
+    </p>
+    <p>
+    	怎么清除浮动？
+    </p>
+</body>
+</html>

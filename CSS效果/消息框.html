@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>消息框</title>
+	<style>
+		.mesBox {
+			width: 200px;
+			height: 100px;
+			border: 3px solid blue;
+			border-radius: 20px;
+			position: relative;
+		}
+		
+		.mesBox:before {
+			display: block;
+			content: "";
+			position: absolute;
+			top: 50px;
+			left: 203px;
+			width: 0px;
+			height: 0px;
+			border: 80px solid transparent;
+			border-left-width: 50px;
+			border-left-color: blue;
+		}
+
+		
+		.mesBox:after {
+		    display: block;
+		    content: "";
+		    position: absolute;
+		    top: 73px;
+		    left: 203px;
+		    width: 0px;
+		    height: 0px;
+		    border: 80px solid transparent;
+		    border-left-width: 80px;
+		    border-left-color: #fff;
+		}
+
+	</style>
+</head>
+<body>
+
+	<div class="mesBox"></div>
+	
+
+</body>
+</html>

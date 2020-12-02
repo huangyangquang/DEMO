@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Promise</title>
+  <style>
+    .pics{
+      width: 300px;
+      margin: 0 auto;
+    }
+    .pics img{
+      display: block;
+      width: 100%;
+    }
+    .loading{
+      text-align: center;
+      font-size: 14px;
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+   参考：
+   https://mp.weixin.qq.com/s/UXCOW-LnPvFFu8YIoIRTrw
+  <p>
+    题目：
+  网页中预加载20张图片资源，分步加载，一次加载10张，两次完成，怎么控制图片请求的并发，怎样感知当前异步请求是否已完成？
+  </p>
+  
+  <div class="wrap">
+    <div class="loading">正在加载...</div>
+    <div class="pics">
+    </div>
+  </div>
+  <script>
+    // 单一请求： 加载一个image
+   function loadImg (url) {
+      return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = function () {
+        resolve(img)
+      }
+      img.onerror = reject
+      img.src = url
+      })
+   }
+    
+   // 同步的操作：
+   for (let i = 0; i < urls.length; i++) {
+      loadImg(urls[i])
+   }
+
+   // 异步的操作： Promise 链式操作
+   // 低阶版：
+   loadImg(urls[0])
+     .then(addToHtml)
+     .then(()=>loadImg(urls[1]))
+     .then(addToHtml)
+     //...
+     .then(()=>loadImg(urls[3]))
+     .then(addToHtml)
+
+   // 进阶版： 用一个中间变量来存储当前的 promise 
+   let promise = Promise.resolve()
+   for (let i = 0; i < urls.length; i++) {
+      promise = promise
+        .then(()=>loadImg(urls[i]))
+        .then(addToHtml)
+   }
+
+   // 高阶版： 使用reduce来简化
+   urls.reduce((promise, url) => {
+     return promise
+       .then(()=>loadImg(url))
+       .then(addToHtml)
+   }, Promise.resolve())
+
+   // 高高阶版： 递归
+   function syncLoad (index) {
+     if (index >= urls.length) return
+        loadImg(urls[index]).then(img => {
+         // process img
+         addToHtml(img)
+         syncLoad (index + 1)
+       })
+   }
+   syncLoad(0) // 调用
+
+   // 那我们怎么在函数外部知道这个递归的结束？
+   // Promise.then() 同样返回的是 thenable 函数 我们只需要在 syncLoad 内部传递这条 Promise 链，直到最后的函数返回。
+   function syncLoad (index) {
+     if (index >= urls.length) return Promise.resolve()
+     return loadImg(urls[index])
+       .then(img => {
+         addToHtml(img)
+         return syncLoad (index + 1)
+       })
+   }
+   syncLoad(0) // 调用
+     .then(() => {
+     document.querySelector('.loading').style.display = 'none'
+   })
+
+   // 超级高阶版：
+   function syncLoad (fn, arr, handler) {
+     if (typeof fn !== 'function') throw TypeError('第一个参数必须是function')
+     if (!Array.isArray(arr)) throw TypeError('第二个参数必须是数组')
+     handler = typeof fn === 'function' ? handler : function () {}
+     const errors = []
+     return load(0)
+
+     function load (index) {
+       if (index >= arr.length) {
+         return errors.length > 0 ? Promise.reject(errors) : Promise.resolve()
+       }
+       return fn(arr[index])
+         .then(data => {
+           handler(data)
+         })
+         .catch(err => {
+           console.log(err)              
+           errors.push(arr[index])
+           return load(index + 1)
+         })
+         .then(() => {
+           return load (index + 1)
+         })
+     }
+   }
+
+ 
+   syncLoad(loadImg, urls, addToHtml).then(() => { // 调用
+       document.querySelector('.loading').style.display = 'none'
+     })
+     .catch(console.log)
+
+  </script>
+
+
+  <script>
+     // 并发请求
+     // 对于这种不需要按顺序加载，只需要按顺序来处理的并发请求，Promise.all 是最好的解决办法
+      const promises = urls.map(loadImg)
+      Promise.all(promises)
+        .then(imgs => {
+          imgs.forEach(addToHtml)
+          document.querySelector('.loading').style.display = 'none'
+        })
+        .catch(err => {
+          console.error(err, 'Promise.all 当其中一个出现错误，就会reject。')
+        })
+
+      // 并发请求，按顺序处理结果
+      // Promise.all 虽然能并发多个请求，但是一旦其中某一个 promise 出错，整个 promise 会被 reject 。 webapp 里常用的资源预加载，可能加载的是 20 张逐帧图片，当网络出现问题， 20张图难免会有一两张请求失败，如果失败后，直接抛弃其他被resolve的返回结果，似乎有点不妥.
+      // 我们只要知道哪些图片出错了，把出错的图片再做一次请求或着用占位图补上就好。 
+      // 上节中的代码 const promises = urls.map(loadImg) 运行后，全部都图片请求都已经发出去了，我们只要按顺序挨个处理 promises 这个数组中的 Promise 实例就好了，先用一个简单点的 for 循环来实现以下，跟第二节中的单一请求一样，利用 Promise 链来顺序处理。
+      let task = Promise.resolve()
+      for (let i = 0; i < promises.length; i++) {
+        task = task.then(() => promises[i])
+                  .then(addToHtml)
+      }
+
+      // 改成 reduce 版本
+      promises.reduce((task, imgPromise) => {
+        return task.then(() => imgPromise)
+                     .then(addToHtml)
+      }, Promise.resolve())
+
+
+      // 控制最大并发数
+      //现在我们来试着完成一下上面的笔试题，这个其实都__不需要控制最大并发数__。 20张图，分两次加载，那用两个 Promise.all 不就解决了？但是用 Promise.all没办法侦听到每一张图片加载完成的事件。而用上一节的方法，我们既能并发请求，又能按顺序响应图片加载完成的事件。
+         let index = 0
+         const step1 = [], step2 = []
+         while(index < 10) {
+           step1.push(loadImg(`./images/pic/${index}.jpg`))
+           index += 1
+         }
+
+         step1.reduce((task, imgPromise, i) => {
+           return task
+             .then(() => imgPromise)
+             .then(() => {
+               console.log(`第 ${i + 1} 张图片加载完成.`)
+             })
+         }, Promise.resolve())
+           .then(() => {
+             console.log('>> 前面10张已经加载完！')
+           })
+           .then(() => {
+             while(index < 20) {
+               step2.push(loadImg(`./images/pic/${index}.jpg`))
+               index += 1
+             }
+             return step2.reduce((task, imgPromise, i) => {
+               return task
+                 .then(() => imgPromise)
+                 .then(() => {
+                   console.log(`第 ${i + 11} 张图片加载完成.`)
+                 })
+             }, Promise.resolve())
+           })
+           .then(() => {
+             console.log('>> 后面10张已经加载完')
+           })
+
+
+      // 那么我们在抽象一下代码，写一个通用的方法出来，这个函数返回一个 Promise，还可以继续处理全部都图片加载完后的异步回调。
+      function stepLoad (urls, handler, stepNum) {
+         const createPromises = function (now, stepNum) {
+             let last = Math.min(stepNum + now, urls.length)
+             return urls.slice(now, last).map(handler)
+           }
+
+           let step = Promise.resolve()
+
+           for (let i = 0; i < urls.length; i += stepNum) {
+             step = step
+               .then(() => {
+                 let promises = createPromises(i, stepNum)
+                 return promises.reduce((task, imgPromise, index) => {
+                   return task
+                     .then(() => imgPromise)
+                     .then(() => {
+                       console.log(`第 ${index + 1 + i} 张图片加载完成.`)
+                     })
+                 }, Promise.resolve())
+               })
+               .then(() => {
+                 let current = Math.min(i + stepNum, urls.length)
+                 console.log(`>> 总共${current}张已经加载完！`)
+               })
+           }
+         return step
+      }
+
+  </script>
+
+  <script>
+     // 但上面的实现和我们说的__最大并发数控制__没什么关系啊，
+     // 最大并发数控制是指：当加载20张图片加载的时候，先并发请求10张图片，
+     // 当一张图片加载完成后，又会继续发起一张图片的请求，让并发数保持在10个，直到需要加载的图片都全部发起请求。
+
+
+     // 1.使用递归
+     //  假设我们的最大并发数是 4 ，这种方法的主要思想是相当于 4 个__单一请求__的 Promise 异步任务在同时运行运行，
+     //  4 个单一请求不断递归取图片 URL 数组中的 URL 发起请求，直到 URL 全部取完，最后再使用 Promise.all 来处理最后还在请求中的异步任务，我们复用第二节__递归__版本的思路来实现这个功能：
+      function limitLoad (urls, handler, limit) {
+         const sequence = [].concat(urls) // 对数组做一个拷贝
+         let count = 0
+         const promises = []
+         const load = function () {
+          if (sequence.length <= 0 || count > limit) return
+          count += 1
+          console.log(`当前并发数: ${count}`)
+          return handler(sequence.shift())
+            .catch(err => {
+              console.error(err)
+            })
+            .then(() => {
+              count -= 1
+              console.log(`当前并发数：${count}`)
+            })
+            .then(() => load())
+      }
+
+      for(let i = 0; i < limit && i < sequence.length; i++){
+            promises.push(load())
+         }
+         return Promise.all(promises)
+      }
+
+
+      // 2.使用 Promise.race
+      // Promise.race 接受一个 Promise 数组，返回这个数组中最先被 resolve 的 Promise 的返回值。
+      // 在使用 Promise.race 实现这个功能，主要是不断的调用 Promise.race 来返回已经被 resolve 的任务，然后从 promises 中删掉这个 Promise 对象，再加入一个新的 Promise，直到全部的 URL 被取完，最后再使用 Promise.all 来处理所有图片完成后的回调。
+
+         function limitLoad (urls, handler, limit) {
+           const sequence = [].concat(urls) // 对数组做一个拷贝
+           let count = 0
+           let promises
+           const wrapHandler = function (url) {
+             const promise = handler(url).then(img => {
+               return { img, index: promise }
+             })
+             return promise
+           }
+
+           //并发请求到最大数
+           promises = sequence.splice(0, limit).map(url => {
+             return wrapHandler(url)
+           })
+
+           // limit 大于全部图片数, 并发全部请求
+           if (sequence.length <= 0) {
+             return Promise.all(promises)
+           }
+
+           return sequence.reduce((last, url) => {
+             return last.then(() => {
+               return Promise.race(promises)
+             }).catch(err => {
+               console.error(err)
+             }).then((res) => {
+               let pos = promises.findIndex(item => {
+                 return item == res.index
+               })
+               promises.splice(pos, 1)
+               promises.push(wrapHandler(url))
+             })
+           }, Promise.resolve()).then(() => {
+             return Promise.all(promises)
+           })
+         }
+
+
+
+
+  </script>
+</body>
+</html>

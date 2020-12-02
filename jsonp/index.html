@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>淘宝联想词-jsonp</title>
+</head>
+<body>
+	<div class="warpper">
+		<label for="inp">搜索关键字：</label>
+		<input type="text" class="inp" id="inp">
+		<ul class="list"></ul>
+	</div>
+
+<!-- 	<script>
+		// 简单实现
+		function addList(data) {
+			console.log(data.result);
+			var str = '';
+			data.result.forEach(ele => {
+				str += `<li>${ele[0]}</li>`
+			})
+			oList.innerHTML = str;
+		}
+
+		var oList = document.getElementsByClassName('list')[0];
+		var inp = document.getElementsByClassName('inp')[0];
+		
+
+		inp.oninput = function() {
+			var oScript = document.createElement('script');
+			oScript.src = `https://suggest.taobao.com/sug?q=${inp.value}&callback=addList`;
+			document.body.append(oScript);
+			document.body.removeChild(oScript);
+		}
+	</script> -->
+
+
+	<script>
+		/**
+			url: string
+			params: obj
+			cb: function
+			cbN: string
+		**/
+		function jsonp(url, params, cb, cbN) {
+			// 兼容处理
+			let queryString = url.indexOf('?') === -1 ? '?' : '&';
+
+			// 拼接参数
+			for(let k in params) {
+				if(params.hasOwnProperty(k)) {
+					queryString += `${k}=${params[k]}&`;
+				}
+			}
+
+			// 产生回调函数名子
+			const cbName = 'jsonp' + Math.random().toString().replace('.', '');
+
+			// 生成script标签
+			const oScript = document.createElement('script');
+			// 请求资源
+			oScript.src = `${url}${queryString}${cbN}=${cbName}`;
+
+			// 全局注册回调函数
+			window[cbName] = function() {
+				// 调用回调
+				cb(...arguments);
+				// 从body中删除
+				document.body.removeChild(oScript)
+			}
+
+			// 插入到body里
+			document.body.appendChild(oScript);
+
+		}
+
+
+
+		const inp = document.getElementsByClassName('inp')[0];
+
+		function addList(data) {
+			const list = document.getElementsByClassName('list')[0];
+			let str = '';
+			data.result.forEach(ele => {
+				str += `<li>${ele[0]}</li>`
+			})
+			list.innerHTML = str;
+		}
+
+		inp.oninput = function() {
+			jsonp('https://suggest.taobao.com/sug', {
+				q: inp.value
+			}, addList, 'callback')
+		}
+
+	</script>
+</body>
+</html>

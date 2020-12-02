@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>打印出当前网页使用了多少种HTML元素</title>
+</head>
+<body>
+	<p><span></span></p>
+	<div>
+		<div>
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+	</div>
+	<ul>
+		<li></li>
+	</ul>
+	<ol>
+		<li></li>
+	</ol>
+	<ins>huangfengquan</ins>
+	<p>
+		huang
+		<div>feng</div>
+		quan
+	</p>
+</body>
+<script>
+	const eles = document.querySelectorAll("*"),
+		allTags = [...eles].map(ele => ele.tagName),
+		set = new Set([...allTags])
+
+	console.log( set.size )
+</script>
+</html>
