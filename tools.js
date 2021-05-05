@@ -183,3 +183,25 @@ function LoadScript(url, callback) {
 	script.src = url;
 	document.getElementsByTagName('head')[0].appendChild(script);
 }
+
+
+/**
+ * [getCursorPositionPercentage 获取鼠标在某个元素内，水平/垂直位置上，相对于该元素元素大小的百分比]
+ * @Author   huangfengquan-Joshua
+ * @DateTime 2021-05-05T01:46:13+0800
+ * @param    {[object]}                 e      [事件源对象]
+ * @param    {[object]}                 target [鼠标在哪个元素内移动]
+ * @return   {[object]}                        [鼠标在target元素内，水平、垂直方向上，相对于target元素大小的百分比；正常取值在0-1之间，如果鼠标在元素之外，则是-1 或者事件不触发]
+ */
+function getCursorPositionPercentage (e, target) {
+	let item = target || e.target
+    let itemRect = item.getBoundingClientRect()
+    // 计算鼠标在目标元素内的 水平/垂直 方向上的位置百分比
+    let x_Percentage = Math.abs(e.clientX - itemRect.left) / itemRect.width
+    let y_Percentage = Math.abs(e.clientY - itemRect.top) / itemRect.height
+
+    return {
+    	x_Percentage: x_Percentage > 1 || y_Percentage > 1 ? -1 : x_Percentage,
+    	y_Percentage: x_Percentage > 1 || y_Percentage > 1 ? -1 : y_Percentage
+    };
+}
