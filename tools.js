@@ -205,3 +205,44 @@ function getCursorPositionPercentage (e, target) {
     	y_Percentage: x_Percentage > 1 || y_Percentage > 1 ? -1 : y_Percentage
     };
 }
+
+
+// 判断元素是否出现在可视区内之offsetTop + scrollTop + innerHeight
+function isInViewPortOfOne (el) {
+    // viewPortHeight(可视区高度) 兼容所有浏览器写法
+    const viewPortHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight 
+    const offsetTop = el.offsetTop
+    const scrollTop = document.documentElement.scrollTop
+    const top = offsetTop - scrollTop
+    return top <= viewPortHeight
+}
+
+// 判断元素是否出现在可视区内之getBoundingClientRect
+function isInViewPort(element) {
+  const viewWidth = window.innerWidth || document.documentElement.clientWidth;
+  const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+  const {
+    top,
+    right,
+    bottom,
+    left,
+  } = element.getBoundingClientRect();
+
+  // return ( // 判断元素完全出现可视区范围内
+  //   top >= 0 &&
+  //   left >= 0 &&
+  //   right <= viewWidth &&
+  //   bottom <= viewHeight
+  // );
+
+  return !( // 判断元素完全/部分出现可视区范围内
+  	top > viewHeight ||
+  	right < 0 || 
+  	bottom < 0 || 
+  	left > viewWidth
+
+  )
+}
+
+// 判断元素是否出现在可视区内之IntersectionObserver
+// 推荐（性能好）
