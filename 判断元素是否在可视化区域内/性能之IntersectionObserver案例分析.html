@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>IntersectionObserver案例分析</title>
+	<style>
+		.container {
+		    display: flex;
+		    flex-wrap: wrap;
+		}
+		.target {
+		    margin: 5px;
+		    width: 20px;
+		    height: 20px;
+		    background: red;
+		}
+	</style>
+</head>
+<body>
+	<div class="container"></div>
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script>
+		const $container = $(".container");
+		createTargets()
+
+		const $targets = $(".target");
+		const observer = new IntersectionObserver(getYellow, { threshold: 1.0 });
+
+		function getYellow(entries, observer) {
+		    entries.forEach(entry => {
+		        $(entry.target).css("background-color", "yellow");
+		    });
+		}
+
+		$targets.each((index, element) => {
+		    observer.observe(element);
+		});
+
+		
+
+		// 插入 10000 个 <div class="target"></div>
+		function createTargets() {
+		  const htmlString = new Array(10000)
+		    .fill('<div class="target"></div>')
+		    .join("");
+		  $container.html(htmlString);
+		}
+
+	</script>
+</body>
+</html>
